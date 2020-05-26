@@ -42,10 +42,20 @@ const styles = StyleSheet.create({
     },
     view: {
         margin: 8,
-        width: vpWidth *.5 - 15,         
+        width: vpWidth *.5 - 15,  
+        shadowColor: "#0000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,  
+        backgroundColor: 'white',
+        borderRadius: 5,     
     },
     img: {
         borderRadius: 5,
-        flex: 1
+        flex: 1,
     }
 });
