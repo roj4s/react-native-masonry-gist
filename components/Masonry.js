@@ -9,13 +9,17 @@ export default function Masonry({data}) {
     <ScrollView style={styles.container}>
         <View 
             style={{
-                    height: vpHeight * data.length / 3,
-                    flexWrap: 'wrap'
+                    height: vpHeight * data.length / 6,
+                    flexWrap: 'wrap',
+                    width: vpWidth
                 }}>
             {
                 data.map((item)=>
                 <View 
-                    style={styles.view} 
+                    style={{
+                        ...styles.view,
+                        height: parseInt(Math.max(0.3, Math.random()) * vpWidth)
+                    }} 
                     key={item.id}>
                     <Image                        
                         style={styles.img} 
@@ -33,12 +37,15 @@ const vpWidth = Dimensions.get('window').width;
 const vpHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({    
+    container: {
+        width: vpWidth
+    },
     view: {
-        margin: 8             
+        margin: 8,
+        width: vpWidth *.5 - 15,         
     },
     img: {
-        width: vpWidth / 2 - 15,
-        height: vpWidth,
-        borderRadius: 5
+        borderRadius: 5,
+        flex: 1
     }
 });
