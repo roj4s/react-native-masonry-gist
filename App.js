@@ -8,9 +8,21 @@ import Masonry from './components/Masonry';
 
 
 export default function App() {
+
+  let data = [];
+
+  for(let i=0; i<20; i++){
+      data.push({
+          id: `${i}`,
+          image_url: `https://i.picsum.photos/id/${parseInt(Math.random() * 1084)}/300/400.jpg`
+        });
+  }
+
   return (
     <SafeAreaView style={styles.container}> 
-      <Masonry />       
+      <Masonry
+        data={data}
+       />       
     </SafeAreaView>
  );
 }
