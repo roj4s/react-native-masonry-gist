@@ -54,9 +54,14 @@ export default class Masonry extends Component {
             });
         }
 
+        //const margin = this.styles.view.margin ;
+        //sumHeight += margin * data.length;
+
+        let finalHeight = this.state.containerHeight + sumHeight / 2 + this.vpHeight;
+        
         this.setState({
             data: [...this.state.data, ...data],
-            containerHeight: this.state.containerHeight + sumHeight / 2
+            containerHeight: finalHeight
         });
 
     }
