@@ -7,22 +7,11 @@ import {
 import Masonry from './components/Masonry';
 
 
-export default function App() {
-
-  let data = [];
-
-  for(let i=0; i<50; i++){
-      data.push({
-          id: `${i}`,
-          image_url: `https://i.picsum.photos/id/${parseInt(Math.random() * 200)}/300/400.jpg`
-        });
-  }
+export default function App() {  
 
   return (
     <SafeAreaView style={styles.container}> 
-      <Masonry
-        data={data}
-       />       
+      <Masonry />       
     </SafeAreaView>
  );
 }

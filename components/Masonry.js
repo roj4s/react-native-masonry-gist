@@ -1,61 +1,103 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View, Image, StyleSheet, ScrollView, Dimensions
 } from 'react-native';
 
 
-export default function Masonry({data}) {
-  return (
-    <ScrollView style={styles.container}>
-        <View 
-            style={{
-                    height: vpHeight * data.length / 6,
-                    flexWrap: 'wrap',
-                    width: vpWidth
-                }}>
-            {
-                data.map((item)=>
-                <View 
-                    style={{
-                        ...styles.view,
-                        height: parseInt(Math.max(0.3, Math.random()) * vpWidth)
-                    }} 
-                    key={item.id}>
-                    <Image                        
-                        style={styles.img} 
-                        source={{uri: item.image_url}} 
-                        />
+export default class Masonry extends Component {
+
+    constructor(props){
+        super(props);
+
+        this.vpWidth = Dimensions.get('window').width;
+        this.vpHeight = Dimensions.get('window').height;
+        
+        this.state = {data: [], containerHeight: 0};
+
+        this.styles = StyleSheet.create({    
+            container: {
+                width: this.vpWidth
+            },
+            view: {
+                margin: 8,
+                width: this.vpWidth *.5 - 15,  
+                shadowColor: "#0000",
+                shadowOffset: {
+                    width: 0,
+                    height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,  
+                backgroundColor: 'white',
+                borderRadius: 5,     
+            },
+            img: {
+                borderRadius: 5,
+                flex: 1,
+            }
+        });
+
+    }
+
+    generateData(){
+
+        let data = [];
+        let sumHeight = 0;
+        for(let i=0; i<50; i++){
+            const height = parseInt(Math.max(0.3, Math.random()) * this.vpWidth);
+            sumHeight += height; 
+            data.push({
+              id: `${i}`,
+              image_url: `https://i.picsum.photos/id/${parseInt(Math.random() * 200)}/300/400.jpg`,
+              height: height
+            });
+        }
+
+        this.setState({
+            data: [...this.state.data, ...data],
+            containerHeight: this.state.containerHeight + sumHeight / 2
+        });
+
+    }
+
+    componentDidMount(){
+
+        this.generateData();
+
+    }
+
+    render(){
+
+            return (
+                <ScrollView 
+                    style={this.styles.container}        
+                    >
+                    <View 
+                        style={{
+                                height: this.state.containerHeight,
+                                flexWrap: 'wrap',
+                                width: this.vpWidth
+                            }}>
+                        {
+                            this.state.data.map((item)=>
+                            <View 
+                                style={{
+                                    ...this.styles.view,
+                                    height: item.height
+                                }} 
+                                key={item.id}>
+                                <Image                        
+                                    style={this.styles.img} 
+                                    source={{uri: item.image_url}} 
+                                    />
+                            </View>
+                                )
+                    }        
                 </View>
-                    )
-           }        
-        </View>
-    </ScrollView>
- );
+            </ScrollView>
+        );
+    }
 }
 
-const vpWidth = Dimensions.get('window').width;
-const vpHeight = Dimensions.get('window').height;
 
-const styles = StyleSheet.create({    
-    container: {
-        width: vpWidth
-    },
-    view: {
-        margin: 8,
-        width: vpWidth *.5 - 15,  
-        shadowColor: "#0000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,  
-        backgroundColor: 'white',
-        borderRadius: 5,     
-    },
-    img: {
-        borderRadius: 5,
-        flex: 1,
-    }
-});
