@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Image, StyleSheet, ScrollView, Dimensions
+  View, StyleSheet, ScrollView, Dimensions
 } from 'react-native';
 
 
@@ -8,46 +8,23 @@ export default class Masonry extends Component {
 
     constructor(props){
         super(props);
+        this.pageSize = this.props.pageSize | 50;
 
         this.vpWidth = Dimensions.get('window').width;
         this.vpHeight = Dimensions.get('window').height;
 
-        this.pageSize = 50;
-
         this.handleScroll = this.handleScroll.bind(this);
+        this.logScrollViewSize = this.logScrollViewSize.bind(this);
+        this.scrollViewHeight = 0;
         
         this.state = {
-            dataA: [],
-            dataB: [], 
-            containerHeight: 0,
-            lastKey: 0
+            data: []
         };
-
+        
         this.styles = StyleSheet.create({    
             container: {
                 width: this.vpWidth,
                 flexDirection: 'row'
-            },
-            card: {
-                margin: 8,
-                width: this.vpWidth *.5 - 15,  
-                shadowColor: "#0000",
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,  
-                backgroundColor: 'white',
-                borderRadius: 5,     
-            },
-            viewContainer: {
-                width: this.vpWidth * 0.5,
-            },
-            img: {
-                borderRadius: 5,
-                flex: 1,
             }
         });
 
@@ -55,55 +32,27 @@ export default class Masonry extends Component {
 
     generateData(){
 
-        let dataA = [];
-        let dataB = [];
-        let sumHeightA = 0;
-        let sumHeightB = 0;
+        const data = this.props.itemsProvider(this.pageSize);
 
-        for(let i=0; i < this.pageSize; i++){
-        
-            const height = parseInt(Math.max(0.3, Math.random()) * this.vpWidth);
-            const info = {
-                id: `${this.state.lastKey + i}`,
-                image_url: `https://i.picsum.photos/id/${parseInt(Math.random() * 200)}/300/400.jpg`,
-                height: height
-            };
-
-            if(i < this.pageSize / 2){
-                console.log('Pushing to A');
-                sumHeightA += height; 
-                dataA.push(info);
-            }
-            else{
-                console.log('Pushing to B');
-                sumHeightB += height;
-                dataB.push(info);
-            }
-
-        }
-        console.log(dataA);
-
-        let finalHeight = this.state.containerHeight + Math.max(sumHeightA, sumHeightB);
-               
         this.setState({
-            dataA: [...this.state.dataA, ...dataA],
-            dataB: [...this.state.dataB, ...dataB],
-            containerHeight: finalHeight,
-            lastKey: this.state.lastKey + this.pageSize
+            data: [...this.state.data, ...data]
         });
-
-        
 
     }
 
     handleScroll(e){
 
-            const y = e.nativeEvent.contentOffset.y;
-            const lastScreenOffset = this.state.containerHeight - this.vpHeight * 3;
-            if(y >= lastScreenOffset){
+            const { y } = e.nativeEvent.contentOffset;
+            const height = this.scrollViewHeight;
+
+            let lastScreenOffset = height - this.vpHeight * 3;
+            if( y >= lastScreenOffset ){
                 this.generateData();
             }
-        
+    }
+
+    logScrollViewSize(width, height){
+        this.scrollViewHeight = height;
     }
 
     componentDidMount(){
@@ -113,69 +62,33 @@ export default class Masonry extends Component {
     }
 
     render(){
-
-        console.log(this.state);
-
-            const m = (
+            const data = this.state.data;
+            
+            return (
                 <ScrollView 
-                    onScroll={this.handleScroll}        
+                    onScroll={this.handleScroll} 
+                    onContentSizeChange={this.logScrollViewSize}       
                     >
                      <View 
-                        style={{
-                                ...this.styles.container,
-                                height: this.state.containerHeight
-                            }}
+                        style={this.styles.container}
                         >
-                            <View 
-                                style={{
-                                        ...this.styles.viewContainer,
-                                        height: this.state.containerHeight,
-                                    }}>
+                            <View>
                                 {
-                                    this.state.dataA.map((item)=>
-                                    <View 
-                                        style={{
-                                            ...this.styles.card,
-                                            height: item.height
-                                        }} 
-                                        key={item.id}>                                      
-                                        <Image                        
-                                            style={this.styles.img} 
-                                            source={{uri: item.image_url}} 
-                                            />
-                                    </View>
-                                        )
+                                    data.length ? data.slice(0, data.length / 2).map((di, i) => { 
+                                        return this.props.renderItem(di, i) 
+                                    }) : 
+                                        (<></>)
                                 }        
                             </View>
-
-                            <View 
-                                style={{
-                                        ...this.styles.viewContainer,
-                                        height: this.state.containerHeight,
-                                    }}>
+                            <View>
                                 {
-                                    this.state.dataB.map((item)=>
-                                    <View 
-                                        style={{
-                                            ...this.styles.card,
-                                            height: item.height
-                                        }} 
-                                        key={item.id}>                                      
-                                        <Image                        
-                                            style={this.styles.img} 
-                                            source={{uri: item.image_url}} 
-                                            />
-                                    </View>
-                                        )
+                                    data.length ? data.slice(data.length/2, data.length).map((di, i) => { 
+                                        return this.props.renderItem(di, i + data.length/2) 
+                                    }) : (<></>)
                                 }        
                             </View>
-
                     </View>
             </ScrollView>
         );
-        console.log(m);
-        return m;
     }
 }
-
-
