@@ -7,7 +7,8 @@ import {
   Image
 } from 'react-native';
 
-import Masonry from './components/Masonry';
+//import Masonry from './components/Masonry';
+import Masonry from 'react-native-infinite-masonry';
 
 
 export default function App() {  
