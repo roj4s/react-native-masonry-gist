@@ -9,7 +9,7 @@
   ``` yarn add react-native-infinite-masonry ```
 
   Check out how I constructed this Masonry at
-  [Medium](https://medium.com/@rojas_31524/react-native-masonry-with-infinite-scrolling-6104392f0ff4).
+  [Medium](https://medium.com/@roj4s/react-native-masonry-with-infinite-scrolling-6104392f0ff4).
 
 ## How to run
 
